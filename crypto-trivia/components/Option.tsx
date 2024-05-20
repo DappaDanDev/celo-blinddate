@@ -3,12 +3,20 @@ import React from 'react';
 
 interface OptionProps {
   option: string;
+  isSelected: boolean
+  checkIfSelected:()=> void
+  setSelectedOption: any
 
 
 }
-const Option = ({option}:OptionProps) => {
+const Option = ({option, isSelected, checkIfSelected, setSelectedOption}:OptionProps) => {
+  const handleSelect = () => {
+    setSelectedOption(option);
+    checkIfSelected();
+  }
+
   return (
-    <TouchableOpacity activeOpacity={0.8} style={styles.option}>
+    <TouchableOpacity onPress={handleSelect} activeOpacity={0.8} style={[styles.option,{backgroundColor: isSelected ? "#ABD1C6" : "#FFF"} ]}>
     <View>
       <Text style={{ fontWeight: "500"}}>{option}</Text>
     </View>

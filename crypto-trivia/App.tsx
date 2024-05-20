@@ -3,6 +3,7 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-na
 import Option from "./components/Option";
 import { useEffect, useState } from "react";
 import {quizData} from "./questions";
+import Results from "./components/Results";
 
 
 
@@ -11,6 +12,14 @@ export default function App() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [selectedOption, setSelectedOption] = useState("");
+  const [showResult, setShowResult] = useState(false);
+  const [checkIfSelected, setCheckIfSelected] = useState({
+    option1: false,
+    option2: false,
+    option3: false,
+    option4: false,
+
+  });
 
 
   useEffect(() => {
@@ -22,11 +31,68 @@ export default function App() {
     let currentQuestion = questions[currentQuestionIndex];
 
     const handleNext = () => {
+      let correctAnswer = questions[currentQuestionIndex]?.answer; 
+
+      if(selectedOption === correctAnswer) {
+        setScore((prevScore) => prevScore + 1);
+      }
+
       if (currentQuestionIndex < questions?.length - 1) {
         setCurrentQuestionIndex((prevQuestion) => prevQuestion + 1);
+    } else {
+      setShowResult(true);
+
     }
+    setCheckIfSelected({
+      option1: false,
+      option2: false,
+      option3: false,
+      option4: false,
+    });
   };
 
+  const checkOptionOne = () => {
+    setCheckIfSelected({
+      option1: true,
+      option2: false,
+      option3: false,
+      option4: false,
+    });
+  }
+
+  const checkOptionTwo = () => {
+    setCheckIfSelected({
+      option1: false,
+      option2: true,
+      option3: false,
+      option4: false,
+    });
+  }
+
+  const checkOptionThree = () => {
+    setCheckIfSelected({
+      option1: false,
+      option2: false,
+      option3: true,
+      option4: false,
+    });
+  }
+  const checkOptionFour  = () => {
+    setCheckIfSelected({
+      option1: false,
+      option2: false,
+      option3: false,
+      option4: true,
+    });
+  }
+
+  const restart = () => {
+    setScore(0);
+    setCurrentQuestionIndex(0);
+    setShowResult(false);
+  }
+
+  if (showResult) return <Results restart={restart} score={score} />  
 
 
 
@@ -36,7 +102,7 @@ export default function App() {
 
       <SafeAreaView>
         <View style={styles.countwrapper}>
-          <Text style={{ fontWeight: "600" }}>1/4</Text>
+          <Text style={{ fontWeight: "600" }}>{currentQuestionIndex + 1}/{questions?.length}</Text>
         </View>
 
         <View style={styles.questionwrapper}>
@@ -53,10 +119,10 @@ export default function App() {
         </View>
 
         <View style={styles.optionwrapper}>
-            <Option option={currentQuestion?.options[0]}/>
-            <Option option={currentQuestion?.options[1]}/>
-            <Option option={currentQuestion?.options[2]}/>
-            <Option option={currentQuestion?.options[3]}/>
+            <Option setSelectedOption={setSelectedOption} checkIfSelected={checkOptionOne} isSelected={checkIfSelected.option1} option={currentQuestion?.options[0]}/>
+            <Option setSelectedOption={setSelectedOption} checkIfSelected={checkOptionTwo} isSelected={checkIfSelected.option2} option={currentQuestion?.options[1]}/>
+            <Option setSelectedOption={setSelectedOption} checkIfSelected={checkOptionThree} isSelected={checkIfSelected.option3} option={currentQuestion?.options[2]}/>
+            <Option setSelectedOption={setSelectedOption} checkIfSelected={checkOptionFour} isSelected={checkIfSelected.option4} option={currentQuestion?.options[3]}/>
 
         </View>
 
